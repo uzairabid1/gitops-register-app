@@ -2,6 +2,7 @@ pipeline {
     agent { label "Jenkins-Agent" }
     environment {
         APP_NAME = "register-app-pipeline"
+        GITHUB_TOKEN = credentials("github_token")
     }
 
     stages {
@@ -35,9 +36,10 @@ pipeline {
                    git add deployment.yaml
                    git commit -m "Updated Deployment Manifest"
                 """
-                withCredentials([string(credentialsId: 'github', variable: 'TOKEN')]) {
-                  sh "git $TOKEN push https://github.com/uzairabid1/gitops-register-app.git main"
+                script{
+                    sh "git push https://uzairabid1:${GITHUB_TOKEN}@github.com/uzairabid1/gitops-register-app.git main"
                 }
+
             }
         }
       
