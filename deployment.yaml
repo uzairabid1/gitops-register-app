@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: register-app
-          image: uzairabid1/register-app-pipeline-2:1.0.0-62
+          image: uzairabid1/register-app-pipeline-2:1.0.0-70
           resources:
             limits:
               memory: "256Mi"
