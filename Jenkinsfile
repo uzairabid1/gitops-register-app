@@ -1,7 +1,7 @@
 pipeline {
     agent { label "Jenkins-Agent" }
     environment {
-        APP_NAME = "register-app-pipeline-2"
+        APP_NAME = "register-app-pipeline"
         GITHUB_TOKEN = credentials("github_token")
     }
 
