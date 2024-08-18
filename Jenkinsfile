@@ -1,7 +1,9 @@
 pipeline {
     agent { label "Jenkins-Agent" }
     environment {
-              APP_NAME = "register-app-pipeline"
+        APP_NAME = "register-app-pipeline"
+        SLACK_CHANNEL = '#deployment' 
+        SLACK_TOKEN = credentials("slack_token")
     }
 
     stages {
@@ -12,9 +14,9 @@ pipeline {
         }
 
         stage("Checkout from SCM") {
-               steps {
-                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/uzairabid1/gitops-register-app'
-               }
+            steps {
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/uzairabid1/gitops-register-app'
+            }
         }
 
         stage("Update the Deployment Tags") {
@@ -36,10 +38,19 @@ pipeline {
                    git commit -m "Updated Deployment Manifest"
                 """
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                  sh "git push https://github.com/uzairabid1/gitops-register-app main"
+                    sh "git push https://github.com/uzairabid1/gitops-register-app main"
                 }
             }
         }
-      
+
+        stage("Send Slack Notification") {
+            steps {
+                slackSend(
+                    channel: "${SLACK_CHANNEL}",
+                    color: "good",
+                    message: "Deployment of ${APP_NAME} with image tag ${IMAGE_TAG} completed successfully."
+                )
+            }
+        }
     }
 }
